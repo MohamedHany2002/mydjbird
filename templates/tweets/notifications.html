@@ -1,0 +1,95 @@
+{%extends 'base.html'%}
+{%block content%}
+{%load humanize%}
+{%load static%}
+  <!-- <div class="container">
+{%for notify in notifications%}
+
+<div class="row">
+
+    <div class="col-md-3"></div>
+<div class="col-md-6 gedf-main">
+
+
+      <div>
+        <a href={{notify.url}}>
+          <img class="rounded-circle" width="45" src="https://picsum.photos/50/50" alt="">
+
+         {{notify.user.username}} made new update
+        </a>
+      </div>
+      <small class="text-warning ml-5">{{notify.created|naturaltime}}</small>
+      
+
+    </div>  
+    
+
+<hr>
+{%endfor%} 
+
+</div>
+  </div> -->
+
+
+  <div class="container-fluid gedf-wrapper mt-3">
+    <div class="row">
+        
+        {%for notify in notifications%}
+        <div class="col-sm-3"></div>
+  
+
+        
+        <div class="col-sm-6 gedf-main">
+            
+            
+            <div class="card gedf-card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="mr-2">
+                                {%if myuser.profile.image%}
+                                <img class="rounded" width="45" src={{myuser.profile.image.url}} alt="hello">
+                                {%else%}
+                              
+                                <img class="rounded-circle" width="45" src="{%static 'default.jpg'%}" alt="">
+                                {%endif%}
+                            </div>
+                            <div class="ml-2">
+                                <div class="h5 m-0"><a href={{notify.url}} style="text-decoration: none;">@{{notify.user.username}} made new update</a>
+                                   
+                                  <small class="text-warning ml-5">{{notify.created|naturaltime}}</small>
+
+                                  
+                                </div>
+                                
+                            </div>
+
+                        </div>
+                        <div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+  
+           
+
+
+        </div>
+        
+        <div class="col-sm-3"></div>
+        {%endfor%}
+
+    </a>
+
+               
+</div>
+</div>
+  
+ 
+<!-- </div> -->
+
+
+{%endblock%}

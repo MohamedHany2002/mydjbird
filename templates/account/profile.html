@@ -1,0 +1,380 @@
+{%extends 'base.html' %}
+{%block content%}
+{% load humanize %}
+{%load static%}
+<div class="container-fluid"> 
+    <div class="profile-cover col-sm-12 mt-2 " style="background-image: url({%static 'lolocover.jpg' %});background-size: cover; height:350px;width:100% ">
+        <div class="menu-container">
+
+        </div>
+        <div class="profile-avatar text-center">
+        <div class="btns-container text-center pt-5">
+ 
+        
+        <a href="#"><img src="{%static 'default.jpg'%}"  style="margin: 0 auto;" class="rounded-circle"></a>
+       <div style="color:olive;font-size: 30px; font-style: italic;">{{myuser.first_name}} {{myuser.last_name}}</div>
+    </div>
+    </div>
+ 
+        </div>
+</div>
+
+
+
+
+
+
+<div class="container-fluid gedf-wrapper mt-3">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+
+                        {%ifequal user_flag False  %}
+                        {%if flag%} 
+                        <form action="{% url 'unfollow_user' %}" method="POST">     
+                            {%csrf_token%}              
+                            <button class="btn btn-primary btn-md mb-2 " name="username" value={{myuser.username}}>
+                                UnFollow </button>
+                            </form> 
+                        {%else%}
+                        <form action="{% url 'follow_user'%}" method="POST">     
+                            {%csrf_token%}              
+                        <button class="btn btn-primary btn-md offset-8" name="username" value={{myuser.username}}>
+                            Follow </button>
+                        </form>    
+                        {%endif%}
+                        {%endifequal%}
+                    <div class="h5">@{{myuser.username}} </div>
+         
+                    
+
+                    <div class="h7 text-muted">Fullname : {{myuser.first_name}} {{myuser.last_name}}</div>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="h6 text-muted">Followers</div>
+                        <div class="h5">{{myuser.followers.all|length}}</div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="h6 text-muted">Following</div>
+                        <div class="h5">{{myuser.followings.all|length}}</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6 gedf-main">
+
+            <!--- \\\\\\\Post-->
+            {%ifequal request.user  myuser%}
+            <div class="card gedf-card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Tweet</a>
+                        </li>
+  
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                            <form action="{%url 'post_tweet' %}" method="POST">
+                                {%csrf_token%}
+                            <div class="form-group">
+                                <label class="sr-only" for="message">post</label>
+                                <textarea class="form-control" id="message" rows="3" name='text' placeholder="What are you thinking?"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="images" role="tabpanel" aria-labelledby="images-tab">
+                            
+                            <div class="form-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="customFile">
+                                    <label class="custom-file-label" for="customFile">Upload image</label>
+                                </div>
+                            </div>
+                            <div class="py-4"></div>
+                        </div>
+                    </div>
+                    <div class="btn-toolbar justify-content-between">
+                        <div class="btn-group">
+                            <button type="submit" name="try" value="ok" class="btn btn-primary btn-lg">Tweet</button>
+                            {%if error%}
+                            <span class="ml-2" style="color: grey;">{{error}}</span>
+                            {%endif%}
+                        </div>
+  
+                    </form>
+                    </div>
+                </div>
+            </div>
+
+            {%endifequal%}
+            <!-- Post /////-->
+
+            <!--- \\\\\\\Post-->
+            {%for tweet in myuser.tweets.all reversed%}
+            <div class="card gedf-card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="mr-2">
+                                {%if myuser.profile.image%}
+                                <img class="rounded" width="45" src={{myuser.profile.image.url}} alt="hello">
+                                {%else%}
+                              
+                                <img class="rounded" width="45" src="{%static 'default.jpg'%}" alt="">
+                                {%endif%}
+                            </div>
+                            <div class="ml-2">
+                                <div class="h5 m-0"><a href="{%url 'account:profile' myuser.username%}">@{{myuser.username}}</a></div>
+                                <div class="h7 text-muted">{{myuser.first_name}} {{myuser.last_name}}</div>
+                            </div>
+                        </div>
+                        <div>
+                            {%ifequal request.user myuser%}
+                            <div class="dropdown">
+                                <button class="btn btn-link dropdown-toggle" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-ellipsis-h"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
+                     
+                                    <a class="dropdown-item" href="{%url 'delete_tweet' tweet.id %}">Delete</a>
+                                    <a class="dropdown-item" href="" data-toggle="modal" data-target="#editModal">Edit</a>
+
+                                </div>
+                                <div class="modal" id="editModal">
+                                    <div class="modal-dialog">
+                                      <div class="modal-content">
+                                  
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                          <h4 class="modal-title">Edit tweet</h4>
+                                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                  
+                                        <!-- Modal body -->
+                                     <form action="{%url 'edit_tweet' tweet.id %}" method="POST">
+                                        
+                                            <textarea placeholder="Edit your tweet here"  class="form-control" cols="40" rows="5" name="text"></textarea>
+                                        
+                                  
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                          
+                                              {%csrf_token%}
+                                          <button  class="btn btn-danger" type="submit">Edit</button>
+                                        </form>
+                                        </div>
+                                  
+                                      </div>
+                                    </div>
+                                  </div>
+                            </div>
+                            {%endifequal%}
+                        </div>
+                    </div>
+
+                </div>
+                <a class="card-link"  href="{%url 'single_tweet' tweet.id%}">
+                <div class="card-body">
+                    
+                    <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i>{{tweet.created|naturaltime}}</div>
+                </a>
+                        {{tweet.text|urlizetrunc:40}}
+                
+                </div>
+            
+            
+       
+                <div class="card-footer">
+                    {%if request.user not in tweet.likes.all %}
+                   <a href="" data-toggle="modal" data-target="#myModal"> {{tweet.likes.all|length}} </a> <a href="{%url 'tweet_like' tweet.id %}"  class="card-link"><i class="fa fa-gittip"></i> Like</a>
+                    {%else%}
+                    <a href="" data-toggle="modal" data-target="#myModal"> {{tweet.likes.all|length}} </a><a  class="card-link"><i class="fa fa-gittip"></i>  Liked</a>
+                    {%endif%}
+                    <a href="#collapseExample{{tweet.id}}" role="button" aria-expanded="false" aria-controls="collapseExample" class="card-link"  data-toggle="collapse"<i class="fa fa-comment"></i>{{tweet.comments.all|length}} Comment</a>
+                    {%if request.user not in tweet.dislikes.all %}
+                    <a href="{%url 'tweet_dislike' tweet.id%}" class="card-link"><i class="fa fa-mail-forward"></i> Dislike</a> <a href="" data-toggle="modal" data-target="#disModal"> {{tweet.dislikes.all|length}}</a>
+                    {%else%}
+                     <a class="card-link"><i class="fa fa-mail-forward"></i><a href="">  Disliked</a> <a href="" data-toggle="modal" data-target="#disModal" > {{tweet.dislikes.all|length}}</a>
+                    {%endif%}
+                    <div class="modal" id="myModal">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                      
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">users who like this tweet</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                      
+                            <!-- Modal body -->
+                         
+                            <div class="modal-body">
+                              {%for liker in tweet.likes.all%}
+                              <div class="ml-2">
+                                <div class="h5 m-0"> {%if liker.profile.image%}<a href="{%url 'account:profile' liker.username %}"><img src="{{liker.profile.image.url}}" width="25" height="20" alt=""></a>{%else%}<a href="{%url 'account:profile' liker.username %}"><img src="{%static 'default.jpg'%}" width="25" height="20" alt=""></a>{%endif%} <a style="text-decoration: none; color: black;" href="{%url 'account:profile' liker.username %}">@{{liker.username}}</a></div>
+                                <div class="h7 text-muted ml-4">{{liker.first_name}} {{liker.last_name}}</div>
+                            </div>
+                              {%endfor%}
+                            </div>
+                      
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>
+                      
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal" id="disModal">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                      
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">users who dislike this tweet</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                      
+                            <!-- Modal body -->
+                         
+                            <div class="modal-body">
+                             
+                              {%for disliker in tweet.dislikes.all%}
+                              <div class="ml-2">
+                                <div class="h5 m-0"> {%if disliker.profile.image%}<img src="{{disliker.profile.image.url}}" width="25" height="20" alt="">{%else%}<img src="{%static 'default.jpg'%}" width="25" height="20" alt="">{%endif%}     <a style="text-decoration: none; color: black;" href="{%url 'account:profile' disliker.username %}">@{{disliker.username}}</a></div>
+                                <div class="h7 text-muted ml-3">{{disliker.first_name}} {{disliker.last_name}}</div>
+                            </div>
+                              {%endfor%}
+                            </div>
+                      
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>
+                      
+                          </div>
+                        </div>
+                      </div>
+                </div>
+            </div>
+            <div class="collapse" id="collapseExample{{tweet.id}}">
+                <div class="card card-body">
+                  
+                    <div class="row bootstrap snippets">
+                        <div class="col-md-12 col-md-offset-2 col-sm-12">
+                            <div class="comment-wrapper">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        Comment 
+                                    </div>
+                                    <div class="panel-body">
+                                        <form action="{%url 'tweet_comment'%}" method="POST" >
+                                            {%csrf_token%}
+                                        <textarea class="form-control" name="text" placeholder="write a comment..." rows="3"></textarea>
+                                    
+                                        <br>
+                                        <button type="submit" name="tweet_id" value={{tweet.id}} class="btn btn-info pull-right">Post</button>
+                                    </form>
+                                        <div class="clearfix"></div>
+                                        <hr>
+                                        <ul class="media-list">
+                                              {%for comment in tweet.comments.all reversed%}
+                                            <li class="media">
+                                                {%if comment.user.profile.image %}
+                                                <a href="{%url 'account:profile' comment.user.username%}" class="pull-left">
+                                                    <img src="{{comment.user.profile.image.url}}" alt="" height="50" width="50" class="img-circle">
+                                                </a>
+                                                {%else%}
+                                                <a href="{%url 'account:profile' comment.user.username%}"  class="pull-left">
+                                                    <img src="{%static 'default.jpg'%}" alt="" height="50" class="img-circle">
+                                                </a>
+                                                {%endif%}
+                                                <div class="media-body">
+                                                    <span class="text-muted pull-right">
+                                                        <small class="text-muted">{{comment.created|naturaltime}}</small>
+                                                    </span>
+                                                    <strong class="text-success ml-3">@{{comment.user.username}}</strong>
+                                                    <p class="ml-3">
+                                                        {{comment.text}}
+                                                    </p>
+                                                </div>
+                                            </li>
+                                            {%endfor%}
+         
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <!-- <div class="comment">
+                        <div class="media">
+                          <div class="media-left">
+                            <a href="#">
+                                {%if comment.user.profile.image%}
+                              <img class="media-object photo-profile" src="{{comment.user.profile.image.url}}" width="32" height="32" alt="...">
+                            {%else%}
+                            <img class="media-object photo-profile" src="https://picsum.photos/50/50" width="32" height="32" alt="...">
+
+                            {%endif%}
+                            </a>
+                          </div>
+                          <div class="media-body">
+                            <a href="#" style="text-decoration: none; " class="anchor-username">@{{comment.user.username}}    </a>   {{comment.text}}
+                   
+                            <p style="font-size: smaller;"> {{comment.created|naturaltime}}</p>
+                            
+                          </div>
+                        </div>
+                   </div>  -->
+               
+             </div>
+              </div>
+            {%endfor%}
+ 
+        </div>
+        <div class="col-md-3" >
+            <div class="card">
+                <div class="card-body">
+
+
+                    <div class="h5">
+                        <a href="{% url 'account:editprofile' %}"  class="btn btn-success btn-md offset-3 mb-3" style="width:125px;">
+                        Edit Profile </a></div>
+                        <div class="h5">
+                            <a href="{% url 'followers' myuser.pk %}"  class="btn btn-success btn-md offset-3 mb-3" style="width:125px;">
+                            Followers </a></div>
+                        </form>
+
+                        <div class="h5">
+                                <a href="{%url 'followings' myuser.pk  %}" class="btn btn-success btn-md offset-3 mb-2 my-2" style="width: 125px;">
+                                Followings </a></div>
+
+                            
+    </div>
+</div>
+</div>
+
+{%endblock%}
+
+    

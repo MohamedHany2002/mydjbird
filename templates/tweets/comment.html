@@ -1,0 +1,70 @@
+{%load static%}
+{%load humanize%}
+<div class="" id="collapseExample{{tweet.id}}">
+    <div class="card card-body">
+      
+        <div class="row bootstrap snippets">
+            <div class="col-md-12 col-md-offset-2 col-sm-12">
+                <div class="comment-wrapper">
+                    <div class="panel panel-info">
+                        <!-- <div class="panel-heading">
+                            Comment 
+                        </div> -->
+                        <div class="panel-body">
+                            <form action="{%url 'tweet_comment'%}" method="POST"  >
+                                {%csrf_token%}
+                            <textarea class="form-control" name="text" placeholder="write a comment..." rows="3"></textarea>
+                            <!-- <input type="hidden"  name="t" value={{tweet.id}}  ></teinxtarea> -->
+                        
+                            <br>
+                            <button type="submit" name="tweet_id"  value={{tweet.id}} class="btn btn-info pull-right">Post</button>
+                        </form>
+                            <div class="clearfix"></div>
+                            <hr>
+                            <ul class="media-list" id="mydiv">
+                                {%with tweet.comments.all as comments%}
+                                  {%for comment in comments reversed%}
+                                <li class="media">
+                                    {%if comment.user.profile.image %}
+                                    <a href="{%url 'account:profile' comment.user.username%}" class="pull-left">
+                                        <img src="{{comment.user.profile.image.url}}" alt="" height="50" width="50" class="img-circle">
+                                    </a>
+                                    {%else%}
+                                    <a href="{%url 'account:profile' comment.user.username%}"  class="pull-left">
+                                        <img src="{%static 'default.jpg'%}" alt="" height="50" class="img-circle">
+                                    </a>
+                                    {%endif%}
+                                    <div class="media-body">
+                                        <span class="text-muted pull-right">
+                                            <small class="text-muted">{{comment.created|naturaltime}}</small>
+                                        </span>
+                                        <a href="{%url 'account:profile' comment.user.username%}" style="text-decoration: none;"><strong class="text-success ml-3">@{{comment.user.username}}</strong></a>
+                                        <p class="ml-3">
+                                            {{comment.text}}
+                                        </p>
+                                    </div>
+                                </li>
+                               
+                                {%endfor%}
+                                {%endwith%}
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+ </div>
+  </div>
+

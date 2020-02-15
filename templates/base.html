@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% load humanize %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DjBird project</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--  -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<!-- 
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+
+    <style>
+ 
+ 
+</style>
+  </head>
+<!-- <body style="background-color:#eeeeee;"> -->
+<!-- <body style="background-image: url({% static 'coverage.jpg' %});background-size: cover; "> -->
+<body style="background-color:lightskyblue;">
+  
+
+
+
+ <div >
+          <nav class="navbar navbar-expand-lg bg-info rounded">
+            <span><a href="{%url 'tweets'%}"><img src="{%static 'logooo.jpeg'%}" style="border: 0;" class="ml-5 mt-1" class="rounded-circle" height="50" width="50" alt="lol"></a></span>
+
+            <a class="navbar-brand text-light ml-2" href="{%url 'tweets'%}" style="font-style: italic; font-size: 30px;">DjBird</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+
+
+            <div class="collapse navbar-collapse mr-2" id="navbarSupportedContent" style="display: unset !important;">
+              <ul class="nav nav-pills mr-5 ml-5 justify-content-end">
+                
+            <form class="form-inline my-2 my-lg-0 ml-5 mr-4 " action="{%url 'search' %}" >
+              <input class="form-control mr-sm-1" type="search" placeholder="Search ..." aria-label="Search" name="keyword">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="background-color: #eee;">Search</button>
+            </form>
+
+        
+                  <!-- <div class="col-3"> -->
+                <li class="nav-item dropdown mr-2 ">
+                  
+                    <a class="nav-link text-light mt-1" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      
+                      notifications  <i class="fa fa-bell"></i>
+                    </a>
+                      <ul class="dropdown-menu" style="width: 300px; border-radius: 1%; border:3px solid skyblue; border-radius: 20px;">
+                        <!-- <li class="head text-light bg-dark">
+                          <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-12">
+                              <span>Notifications</span>
+                            </div>
+                        </li> -->
+                        {%if notifications%}
+                        {%for notify in notifications%}
+                        <li class="notification-box bg-gray">
+                          <div class="row">
+                            <!-- <div class="col-lg-3 col-sm-3 col-3 text-center">
+                              <img src="/demo/man-profile.jpg" class="w-50 rounded-circle">
+                            </div>     -->
+                            <div class="col-lg-12 col-sm-8 col-8">
+                              <!-- <strong class="text-info">{{notify.user.username}}</strong> -->
+                              <div>
+                                {%if notify.user.profile.image %}
+                                <img class="rounded-circle mr-2" width="45" src="{{notify.user.profile.image.url}}" alt="">
+
+                                {%else%}
+                                <img class="rounded-circle mr-2" width="45" src="{%static 'default.jpg' %}" alt="">
+                                {%endif%}
+                                <a href={{notify.url}} style="color: blue; text-decoration: none; font-size: large;;"> 
+                                @{{notify.user.username}} 
+                                </a><a style="color: black; text-decoration: none;" href="">made new update</a> 
+                              </div>
+                              <small class="text-warning ml-5 pl-3 mt-0">{{notify.created|naturaltime}}</small>
+                            </div>    
+                          </div>
+                        </li>
+                        <hr>
+                        {%endfor%}
+                       
+                        <li class="footer  text-center">
+                          <a href="{%url 'notifications' %}" style="color: black;" class="text-light"><p style="color: black;">View All</p></a>
+                        </li>
+                        {%else%}
+                        <p class="text-center mt-2">No Notifications</p>
+                        {%endif%}
+                      </ul>
+
+                  </li>
+                  <li>
+                    {%if request.user.profile.image%}
+                    
+                    <a href="{%url 'account:profile' request.user.username%}"><img class="rounded mr-2 mt-1" height="40" width="45" src="{{request.user.profile.image.url}}" alt="lol"></a>
+                    {%else%}
+                    
+                    <a href="{%url 'account:profile' request.user.username%}"><img class="rounded mr-2 mt-1" width="40" height="37" src="{%static 'default.jpg' %}" alt="lol"></a>
+                    {%endif%}
+                  </li>
+                    <li class="mt-1">
+                        <div class="btn-group">
+                            <div class="btn-group">
+                            <button id="customDropdown" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                
+                            </button>
+                            
+
+                            <div class="dropdown-menu" aria-labelledby="customDropdown">
+                                <span class="dropdown-menu-arrow"></span>
+                                <a class="dropdown-item" href="{%url 'account:profile' request.user.username%}">profile</a>
+                                <a class="dropdown-item" href="{%url 'account:logout' %}">Logout</a>
+                            </div>
+                            </div>
+                    </li>
+                    <!-- </div> -->
+                <!-- <li class="nav-item active">
+                  <a class="nav-link text-light" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-light" href="#">Project</a>
+                </li> -->
+                
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      {%block content%}
+      {%endblock%}
+
+      <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"> </script>
+
+ 
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+    
+      //   $(document).ready(function(){
+      //      var comment_form=$(".ajax_comment")
+      //      comment_form.submit(function(event){   
+      //        console.log("form we get")
+      //        event.preventDefault();
+      //       console.log($(this).attr('action'))
+      //       console.log($(this).attr('method'))
+      //       myvar=$(this)
+      //      var actionpoint=myvar.attr("action")
+      //      var urlpoint=myvar.attr("method")
+      //      var formdata=myvar
+      //      var token = '{{csrf_token}}';
+          
+      //      $.ajax({
+      //       headers: { "X-CSRFToken": token },
+      //       url:actionpoint,
+      //       type:urlpoint,
+      //       data:$(this).serialize(),
+      //       dataType:'json',
+          
+      //       success: function(response){
+      //         console.log("successed")
+      //         $('#mydiv').html(response['form']);
+      //         // console.log(data)
+      //         // console.log($('#mydiv').html())
+      //         // console.log($(this))
+      //         // console.log(data)
+      //       },
+      //       error: function(){
+      //         console.log("error")
+              
+      //       }
+      //      })  
+      //      })
+           
+      //    }) -->
+        
+      
+      <!-- // <script> -->
+
+
+       <!-- <script>
+      //   $(document).on('submit','.comment-form',function(event){
+      //     event.preventDefault();
+      //     $.ajax({
+      //       type:'POST',
+      //       url:'tweet_comment/',
+      //       data:$(this).serialize(),
+      //       dataType:'json',
+      //       success:function(response){
+      //         console.log('succed')
+      //         $(".comment-section").html(response['form'])
+      //       },
+      //       error:function(rs,e){
+      //         console.log(rs.responseText);
+      //       }
+      //     });
+      //   });
+      // </script> -->
+      <!-- </body> -->
+    
+      </html>
